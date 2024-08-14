@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: spring-boot-standard
+server:
+  port: 8088
+
+# logger configuration
+logging:
+  file:
+    level: info
+    # logs location
+    path: ./logs

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 属性文件:在 properties 文件中找到对应的配置项 -->
+    <springProperty scope="context" name="log.path" source="logging.file.path"/>
+    <springProperty scope="context" name="log.level" source="logging.file.level"/>
+
+    <!-- 定义日志保留天数 -->
+    <property name="MAX_HISTORY" value="10"/>
+    <!-- 定义单个日志文件大小 -->
+    <property name="MAX_FILE_SIZE" value="100MB"/>
+    <!-- 定义日志文件总大小 -->
+    <property name="TOTAL_SIZE_CAP" value="1GB"/>
+
+    <!-- 彩色日志 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %green([%thread]) %highlight(%-5level) %cyan(%logger{20}) - [%method,%line] - %msg%n"/>
+    <!-- 默认的控制台日志输出，一般生产环境都是后台启动，这个没太大作用 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- 定义了一个切面用来监听入参出参 -->
+    <!-- 打印 controller 层日志 -->
+    <appender name="WANG-ASPECT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加写入 -->
+        <append>true</append>
+        <file>
+            ${log.path}/aspect/aspect.log
+        </file>
+        <!-- 日志过滤 -->
+        <!-- 会打印出当前层级及以上层级的日志，如果想要只打印当前层级，可以更换过滤器为 LevelFilter -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${log.level}</level>
+        </filter>
+        <!-- 不会打印 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <!-- 如果命中就禁止这条日志 -->
+            <onMatch>DENY</onMatch>
+            <!-- 如果没有命中就使用这条规则 -->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <!-- 基于文件大小和时间的滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/aspect/aspect-%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+            <!-- 日志文件保留天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!-- 单个日志文件大小 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <!-- 日志归档文件总大小 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <!-- 日志输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 定义了一个切面用来监听 exception -->
+    <!-- 打印 controller 层日志 -->
+    <appender name="WANG-EXCEPTION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加写入 -->
+        <append>true</append>
+        <file>
+            ${log.path}/exception/exception.log
+        </file>
+        <!-- 过滤器，只记录 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!-- 基于文件大小和时间的滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/exception/exception-%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+            <!-- 日志文件保留天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!-- 单个日志文件大小 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <!-- 日志归档文件总大小 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <!-- 日志输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 打印 controller 层日志 -->
+    <appender name="WANG-CONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加写入 -->
+        <append>true</append>
+        <file>
+            ${log.path}/controller/controller.log
+        </file>
+        <!-- 日志过滤 -->
+        <!-- 会打印出当前层级及以上层级的日志，如果想要只打印当前层级，可以更换过滤器为 LevelFilter -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${log.level}</level>
+        </filter>
+        <!-- 不会打印 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <!-- 如果命中就禁止这条日志 -->
+            <onMatch>DENY</onMatch>
+            <!-- 如果没有命中就使用这条规则 -->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <!-- 基于文件大小和时间的滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/controller/controller-%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+            <!-- 日志文件保留天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!-- 单个日志文件大小 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <!-- 日志归档文件总大小 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <!-- 日志输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 打印 service 层日志 -->
+    <appender name="WANG-SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 追加写入 -->
+        <append>true</append>
+        <file>
+            ${log.path}/service/service.log
+        </file>
+        <!-- 日志过滤 -->
+        <!-- 会打印出当前层级及以上层级的日志，如果想要只打印当前层级，可以更换过滤器为 LevelFilter -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${log.level}</level>
+        </filter>
+        <!-- 不会打印 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <!-- 如果命中就禁止这条日志 -->
+            <onMatch>DENY</onMatch>
+            <!-- 如果没有命中就使用这条规则 -->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <!-- 基于文件大小和时间的滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/service/service-%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+            <!-- 日志文件保留天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!-- 单个日志文件大小 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <!-- 日志归档文件总大小 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <!-- 日志输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 错误日志 appender：按照每天生成日志文件 -->
+    <appender name="ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <!-- 过滤器，只记录 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!-- 日志名称 -->
+        <file>${log.path}/error/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/error/error-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <!-- 日志文件保留天数 -->
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <!-- 日志归档文件总大小 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+            <!-- 单个日志文件大小 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <!-- 编码 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 定义了一个切面用来监听入参出参 -->
+    <!-- additivity 设置为 true，表示只在当前 logger 中的 appender-ref 中生效 -->
+    <logger name="com.wangguangwu.standard.aspect.RequestLoggingAspect" level="${log.level}" additivity="false">
+        <appender-ref ref="WANG-ASPECT"/>
+    </logger>
+
+    <!-- 定义了一个切面用来监听入参出参 -->
+    <!-- additivity 设置为 true，表示只在当前 logger 中的 appender-ref 中生效 -->
+    <logger name="com.wangguangwu.standard.aspect.ExceptionLoggingAspect" level="${log.level}" additivity="false">
+        <appender-ref ref="WANG-EXCEPTION"/>
+    </logger>
+
+    <!-- logger 负责打印 com.wangguangwu.standard.controller 下的日志 -->
+    <!-- additivity 设置为 true，表示只在当前 logger 中的 appender-ref 中生效 -->
+    <logger name="com.wangguangwu.standard.controller" level="${log.level}" additivity="false">
+        <appender-ref ref="WANG-CONTROLLER"/>
+        <appender-ref ref="ERROR-APPENDER"/>
+    </logger>
+
+    <!-- logger 负责打印 com.wangguangwu.standard.service 下的日志 -->
+    <!-- additivity 设置为 true，表示只在当前 logger 中的 appender-ref 中生效 -->
+    <logger name="com.wangguangwu.standard.service" level="${log.level}" additivity="false">
+        <appender-ref ref="WANG-SERVICE"/>
+        <appender-ref ref="ERROR-APPENDER"/>
+    </logger>
+
+    <!-- root 指向控制台输出 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
